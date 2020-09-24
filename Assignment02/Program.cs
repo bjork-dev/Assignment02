@@ -26,9 +26,9 @@ namespace Assignment02
                     "Exit"
                 });
 
-                switch (selectedOption)
+                switch (selectedOption) // Menu selection 
                 {
-                    case 0: // Menu selection TODO add method
+                    case 0:
                         expense.AddExpense();
                         break;
 
@@ -49,6 +49,7 @@ namespace Assignment02
                         break;
 
                     case 5: //Exit program
+                        Console.WriteLine("Goodbye!");
                         running = false;
                         break;
                 }
