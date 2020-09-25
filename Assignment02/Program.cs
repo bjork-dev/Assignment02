@@ -4,9 +4,101 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Assignment02 //Todo, fixa så att om man skriver in "blankt" på name, text på Price så skrivs ett felmeddelande ut, istället för att krascha programmet.
+namespace Assignment02
 {
-    public class Program
+    public class Expense
+    {
+        public string Name;
+        public decimal Price;
+        public string Category;
+        public string[] ArrayCategory = { "Food", "Entertainment", "Other" };
+        public List<Expense> ExpenseList = new List<Expense>();
+
+        public void NewExpense(string[] arrayCategory) // Reads the entered variables + selected category from the ShowMenu method.
+        {
+            Console.Clear();
+            Console.WriteLine("Add expense: ");
+            Console.Write("Name: ");
+            Name = Console.ReadLine();
+            Console.Write("Price: ");
+            Price = decimal.Parse(Console.ReadLine());
+            int indexCategory = Program.ShowMenu("Category:", arrayCategory);
+            Category = arrayCategory[indexCategory];
+        }
+
+        //Return the sum of all expenses with the specified category in the specified list, or the sum of all expenses if the category is null.
+        public static decimal SumExpenses(List<Expense> expenses, string category = null) // Returns the sum of all expenses combined.
+        {
+            decimal sum = 0;
+            foreach (var element in expenses)
+            {
+                if (category == null)
+                {
+                    sum += element.Price;
+                }
+                else if (element.Category == category)
+                {
+                    sum += element.Price;
+                }
+            }
+            return sum;
+        }
+
+        public void ShowAllExpenses() //Displays all elements in the expenseList.
+        {
+            Console.Clear();
+            Console.WriteLine("All expenses:\n");
+            foreach (var e in ExpenseList)
+            {
+                Console.WriteLine("- " + e.Name + ": " + e.Price + " kr (" + e.Category + ")");
+            }
+            Console.WriteLine("\nSum: " + Expense.SumExpenses(ExpenseList) + " kr"); //Show the total sum
+        }
+
+        public void ShowSum() //Displays the sum divided by the categories.
+        {
+            Console.Clear();
+            Console.WriteLine("Sum by category:\n");
+            foreach (string str in ArrayCategory)
+            {
+                Console.WriteLine(str + ": " + Expense.SumExpenses(ExpenseList, str) + " kr");
+            }
+        }
+
+        public void RemoveExpense() //Removes the selected index in expenseList by comparing "i" to "select".
+        {
+            Console.Clear();
+            var list = ExpenseList.Select(e => e.Name).ToArray();
+            Console.WriteLine("Which expense do you want to remove?");
+            int select = Program.ShowMenu("Expenses:", list);
+            int i = 0;
+            foreach (var e in ExpenseList) // Tydligen fungerar detta
+            {
+                if (i == select)
+                {
+                    ExpenseList.Remove(e);
+                    Console.WriteLine(e.Name + "removed.");
+                    break;
+                }
+                i++;
+            }
+        }
+
+        public void RemoveAllExpenses()
+        {
+            int select = Program.ShowMenu("Remove all expenses?:", new[]
+                {
+                "Yes",
+                "No"
+                });
+            if (@select != 0) return;
+            ExpenseList.Clear();
+            Console.Clear();
+            Console.WriteLine("All expenses removed.");
+        }
+    }
+
+    public static class Program
     {
         public static void Main()
         {
@@ -29,8 +121,12 @@ namespace Assignment02 //Todo, fixa så att om man skriver in "blankt" på name, t
                 Console.Clear();
                 switch (selectedOption) // Menu selection
                 {
-                    case 0:
-                        expense.AddExpense();
+                    case 0:                                     // Add Expense
+                        var purchase = new Expense();       // Create a temporary object of the Expense class
+                        purchase.NewExpense(p.ArrayCategory);   // Fill in the object
+                        p.ExpenseList.Add(purchase);            // Add the object to the List of expenses
+                        Console.Clear();
+                        Console.WriteLine("Expense added!");       //Kan deta förenklas så att enbart "p.NewExpense()" ligger här?
                         break;
 
                     case 1:                                     // Show All Expenses
@@ -104,6 +200,10 @@ namespace Assignment02 //Todo, fixa så att om man skriver in "blankt" på name, t
                     _ => selected
                 };
             }
+
+            // Reset the cursor and return the selected option.
+            Console.CursorVisible = true;
+            return selected;
         }
     }
 
