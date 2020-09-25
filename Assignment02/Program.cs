@@ -4,101 +4,33 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ExpenseCalculator
+namespace Assignment02
 {
     public class Expense
     {
         public string Name;
         public decimal Price;
         public string Category;
+        public string[] ArrayCategory = { "Food", "Entertainment", "Other" };
+        public List<Expense> ExpenseList = new List<Expense>();
 
-        public void NewExpense(string[] array_category) // Fill in an object of the Expense class
+        public void NewExpense(string[] arrayCategory) // Reads the entered variables + selected category from the ShowMenu method.
         {
+            Console.Clear();
             Console.WriteLine("Add expense: ");
-            Console.Write("name: ");
+            Console.Write("Name: ");
             Name = Console.ReadLine();
-            Console.Write("price: ");
+            Console.Write("Price: ");
             Price = decimal.Parse(Console.ReadLine());
-            int index_category = Program.ShowMenu("Category:", array_category);
-            Category = array_category[index_category];
-        }
-    }
-
-    public class Program
-    {
-        public static void Main()
-        {
-            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-
-            Console.WriteLine("Welcome!");
-
-            string[] array_category = { "Food", "Entertainment", "Other" };
-            List<Expense> expense_list = new List<Expense>();   // List of expenses
-            var running = true;
-
-            while (running)
-            {
-                int selectedOption = ShowMenu("\nMenu:", new[]
-                {
-                    "Add Expense",
-                    "Show All Expenses",
-                    "Show Sum by Category",
-                    "Remove Expense",   //TODO add methods
-                    "Remove All Expenses",
-                    "Exit"
-                });
-
-                Console.Clear();
-                switch (selectedOption) // Menu selection 
-                {
-                    case 0:                                             // Add Expense
-
-                        Expense purchase = new Expense(); // Create a temporary object of the Expense class
-                        purchase.NewExpense(array_category); // Fill in the object 
-                        expense_list.Add(purchase);         // Add the object to the List of expenses
-
-                        Console.Clear();
-                        Console.WriteLine("Expense added!");
-                        break;
-
-                    case 1:                                                // Show All Expenses
-                        Console.WriteLine("All expenses:\n");
-                        foreach (Expense e in expense_list)
-                        {
-                            Console.WriteLine("- " + e.Name + ": " + e.Price + " kr (" + e.Category + ")");
-                        }
-                        Console.WriteLine("\nSum: " + SumExpenses(expense_list) + " kr"); //Show the total sum
-                        break;
-
-                    case 2:                                                 //Show Sum by Category
-                        Console.WriteLine("Sum by category:\n");
-                        foreach (string str in array_category)
-                        {
-                            Console.WriteLine(str + ": " + SumExpenses(expense_list, str) + " kr");
-                        }
-                        break;
-
-                    //case 3:
-                    //    expense.RemoveExpense();
-                    //    break;
-
-                    //case 4:
-                    //    expense.RemoveAllExpenses();
-                    //    break;
-
-                    case 5: //Exit program
-                        Console.WriteLine("Goodbye!");
-                        running = false;
-                        break;
-                }
-            }
+            int indexCategory = Program.ShowMenu("Category:", arrayCategory);
+            Category = arrayCategory[indexCategory];
         }
 
         //Return the sum of all expenses with the specified category in the specified list, or the sum of all expenses if the category is null.
-        public static decimal SumExpenses(List<Expense> expenses, string category = null)
+        public static decimal SumExpenses(List<Expense> expenses, string category = null) // Returns the sum of all expenses combined.
         {
             decimal sum = 0;
-            foreach (Expense element in expenses)
+            foreach (var element in expenses)
             {
                 if (category == null)
                 {
@@ -110,6 +42,115 @@ namespace ExpenseCalculator
                 }
             }
             return sum;
+        }
+
+        public void ShowAllExpenses() //Displays all elements in the expenseList.
+        {
+            Console.Clear();
+            Console.WriteLine("All expenses:\n");
+            foreach (var e in ExpenseList)
+            {
+                Console.WriteLine("- " + e.Name + ": " + e.Price + " kr (" + e.Category + ")");
+            }
+            Console.WriteLine("\nSum: " + Expense.SumExpenses(ExpenseList) + " kr"); //Show the total sum
+        }
+
+        public void ShowSum() //Displays the sum divided by the categories.
+        {
+            Console.Clear();
+            Console.WriteLine("Sum by category:\n");
+            foreach (string str in ArrayCategory)
+            {
+                Console.WriteLine(str + ": " + Expense.SumExpenses(ExpenseList, str) + " kr");
+            }
+        }
+
+        public void RemoveExpense() //Removes the selected index in expenseList by comparing "i" to "select".
+        {
+            Console.Clear();
+            var list = ExpenseList.Select(e => e.Name).ToArray();
+            Console.WriteLine("Which expense do you want to remove?");
+            int select = Program.ShowMenu("Expenses:", list);
+            int i = 0;
+            foreach (var e in ExpenseList) // Tydligen fungerar detta
+            {
+                if (i == select)
+                {
+                    ExpenseList.Remove(e);
+                    Console.WriteLine(e.Name + "removed.");
+                    break;
+                }
+                i++;
+            }
+        }
+
+        public void RemoveAllExpenses()
+        {
+            int select = Program.ShowMenu("Remove all expenses?:", new[]
+                {
+                "Yes",
+                "No"
+                });
+            if (@select != 0) return;
+            ExpenseList.Clear();
+            Console.Clear();
+            Console.WriteLine("All expenses removed.");
+        }
+    }
+
+    public static class Program
+    {
+        public static void Main()
+        {
+            var p = new Expense();
+            var running = true;
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            Console.WriteLine("Welcome!");
+            while (running)
+            {
+                int selectedOption = ShowMenu("\nMenu:", new[]
+                {
+                    "Add Expense",
+                    "Show All Expenses",
+                    "Show Sum by Category",
+                    "Remove Expense",
+                    "Remove All Expenses",
+                    "Exit"
+                });
+
+                Console.Clear();
+                switch (selectedOption) // Menu selection
+                {
+                    case 0:                                     // Add Expense
+                        var purchase = new Expense();       // Create a temporary object of the Expense class
+                        purchase.NewExpense(p.ArrayCategory);   // Fill in the object
+                        p.ExpenseList.Add(purchase);            // Add the object to the List of expenses
+                        Console.Clear();
+                        Console.WriteLine("Expense added!");       //Kan deta förenklas så att enbart "p.NewExpense()" ligger här?
+                        break;
+
+                    case 1:                                     // Show All Expenses
+                        p.ShowAllExpenses();
+                        break;
+
+                    case 2:                                     //Show Sum by Category
+                        p.ShowSum();
+                        break;
+
+                    case 3:
+                        p.RemoveExpense();
+                        break;
+
+                    case 4:
+                        p.RemoveAllExpenses();
+                        break;
+
+                    case 5: //Exit program
+                        Console.WriteLine("Goodbye!");
+                        running = false;
+                        break;
+                }
+            }
         }
 
         // Don't change this method.
@@ -152,14 +193,12 @@ namespace ExpenseCalculator
 
                 // Read another key and adjust the selected value before looping to repeat all of this.
                 key = Console.ReadKey().Key;
-                if (key == ConsoleKey.DownArrow)
+                selected = key switch
                 {
-                    selected = Math.Min(selected + 1, options.Length - 1);
-                }
-                else if (key == ConsoleKey.UpArrow)
-                {
-                    selected = Math.Max(selected - 1, 0);
-                }
+                    ConsoleKey.DownArrow => Math.Min(selected + 1, options.Length - 1),
+                    ConsoleKey.UpArrow => Math.Max(selected - 1, 0),
+                    _ => selected
+                };
             }
 
             // Reset the cursor and return the selected option.
