@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,9 +20,9 @@ namespace Assignment02
             Console.Clear();
             Console.WriteLine("Add expense: ");
             Console.Write("Name: ");
-            Name = Console.ReadLine();
+            Name = Console.ReadLine(); //Should force user to enter a name
             Console.Write("Price: ");
-            Price = decimal.Parse(Console.ReadLine());
+            Price = decimal.Parse(Console.ReadLine()); //Crashes if price is empty or input is not a number
             int indexCategory = Program.ShowMenu("Category:", arrayCategory);
             Category = arrayCategory[indexCategory];
         }
@@ -128,7 +129,6 @@ namespace Assignment02
                         Console.Clear();
                         Console.WriteLine("Expense added!");       //Kan deta förenklas så att enbart "p.NewExpense()" ligger här?
                         break;
-
                     case 1:                                     // Show All Expenses
                         p.ShowAllExpenses();
                         break;
