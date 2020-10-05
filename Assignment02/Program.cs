@@ -12,23 +12,64 @@ namespace Assignment02
         public string Name;
         public decimal Price;
         public string Category;
-        public string[] ArrayCategory = { "Food", "Entertainment", "Other" };
+        public static string[] ArrayCategory = { "Food", "Entertainment", "Other" };
         public List<Expense> ExpenseList = new List<Expense>();
 
-        public void NewExpense(string[] arrayCategory) // Reads the entered variables + selected category from the ShowMenu method.
+        public void NewExpense() // Reads purchase information from the console and adds this purchase to the ExpenseList
         {
             Console.Clear();
             Console.WriteLine("Add expense: ");
-            Console.Write("Name: ");
-            Name = Console.ReadLine(); //Should force user to enter a name
-            Console.Write("Price: ");
-            Price = decimal.Parse(Console.ReadLine()); //Crashes if price is empty or input is not a number
-            int indexCategory = Program.ShowMenu("Category:", arrayCategory);
-            Category = arrayCategory[indexCategory];
+            string userInput;
+            string name, category;
+            decimal price;
+
+            while (true)
+            {
+                Console.Write("Name: ");
+                userInput = Console.ReadLine();
+
+                if (!String.IsNullOrWhiteSpace(userInput))
+                {
+                    name = userInput;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Error! Please, enter a name.");
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Price: ");
+                userInput = Console.ReadLine();
+                try
+                {
+                    price = decimal.Parse(userInput);
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine("Error! Please, enter a number.");
+                }
+            }
+
+            int indexCategory = Program.ShowMenu("Category:", Expense.ArrayCategory);
+            category = Expense.ArrayCategory[indexCategory];
+
+            var purchase = new Expense
+            {
+                Name = name,
+                Price = price,
+                Category = category
+            };
+
+            ExpenseList.Add(purchase);
+            Console.Clear();
+            Console.WriteLine("Expense added!");
         }
 
-        //Return the sum of all expenses with the specified category in the specified list, or the sum of all expenses if the category is null.
-        public static decimal SumExpenses(List<Expense> expenses, string category = null) // Returns the sum of all expenses combined.
+        public static decimal SumExpenses(List<Expense> expenses, string category = null)  //Return the sum of all expenses with the specified category in the specified list, or the sum of all expenses if the category is null.
         {
             decimal sum = 0;
             foreach (var element in expenses)
@@ -66,27 +107,32 @@ namespace Assignment02
             }
         }
 
-        public void RemoveExpense() //Removes the selected index in expenseList by comparing "i" to "select".
+        public void RemoveExpense() //Removes the selected expense
         {
             Console.Clear();
             var list = ExpenseList.Select(e => e.Name).ToArray();
             Console.WriteLine("Which expense do you want to remove?");
             int select = Program.ShowMenu("Expenses:", list);
-            int i = 0;
-            foreach (var e in ExpenseList) // Tydligen fungerar detta
+
+            //Förslag
+            /*
+            Console.Clear();
+            List<string> options = new List<string>();
+            foreach (Expense e in ExpenseList)
             {
-                if (i == select)
-                {
-                    ExpenseList.Remove(e);
-                    Console.WriteLine(e.Name + "removed.");
-                    break;
-                }
-                i++;
+                options.Add(e.Name + ": " + e.Price + " kr (" + e.Category + ")");
             }
+            int select = Program.ShowMenu("Which expense do you want to remove?", options.ToArray());
+            */
+
+            ExpenseList.RemoveAt(select);   
+            Console.Clear();
+            Console.WriteLine("Expense removed!");
         }
 
         public void RemoveAllExpenses()
         {
+            Console.Clear();
             int select = Program.ShowMenu("Remove all expenses?:", new[]
                 {
                 "Yes",
@@ -119,21 +165,17 @@ namespace Assignment02
                     "Exit"
                 });
 
-                Console.Clear();
+                
                 switch (selectedOption) // Menu selection
                 {
-                    case 0:                                     // Add Expense
-                        var purchase = new Expense();       // Create a temporary object of the Expense class
-                        purchase.NewExpense(p.ArrayCategory);   // Fill in the object
-                        p.ExpenseList.Add(purchase);            // Add the object to the List of expenses
-                        Console.Clear();
-                        Console.WriteLine("Expense added!");       //Kan deta förenklas så att enbart "p.NewExpense()" ligger här?
+                    case 0:                                     
+                        p.NewExpense();
                         break;
-                    case 1:                                     // Show All Expenses
+                    case 1:                                     
                         p.ShowAllExpenses();
                         break;
 
-                    case 2:                                     //Show Sum by Category
+                    case 2:                                     
                         p.ShowSum();
                         break;
 
@@ -146,6 +188,7 @@ namespace Assignment02
                         break;
 
                     case 5: //Exit program
+                        Console.Clear();
                         Console.WriteLine("Goodbye!");
                         running = false;
                         break;
