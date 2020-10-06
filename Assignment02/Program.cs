@@ -20,7 +20,7 @@ namespace Assignment02
             Console.Clear();
             Console.WriteLine("Add expense: ");
             string userInput;
-            string name, category;
+            string name;
             decimal price;
 
             while (true)
@@ -28,15 +28,13 @@ namespace Assignment02
                 Console.Write("Name: ");
                 userInput = Console.ReadLine();
 
-                if (!String.IsNullOrWhiteSpace(userInput))
+                if (!string.IsNullOrWhiteSpace(userInput))
                 {
                     name = userInput;
                     break;
                 }
-                else
-                {
-                    Console.WriteLine("Error! Please, enter a name.");
-                }
+                Console.Clear();
+                Console.WriteLine("Error! Please, enter a name.");
             }
 
             while (true)
@@ -50,12 +48,13 @@ namespace Assignment02
                 }
                 catch
                 {
+                    Console.Clear();
                     Console.WriteLine("Error! Please, enter a number.");
                 }
             }
 
             int indexCategory = Program.ShowMenu("Category:", Expense.ArrayCategory);
-            category = Expense.ArrayCategory[indexCategory];
+            var category = Expense.ArrayCategory[indexCategory];
 
             var purchase = new Expense
             {
@@ -112,36 +111,43 @@ namespace Assignment02
             Console.Clear();
             var list = ExpenseList.Select(e => e.Name).ToArray();
             Console.WriteLine("Which expense do you want to remove?");
-            int select = Program.ShowMenu("Expenses:", list);
-
-            //Förslag
-            /*
-            Console.Clear();
-            List<string> options = new List<string>();
-            foreach (Expense e in ExpenseList)
+            try
             {
-                options.Add(e.Name + ": " + e.Price + " kr (" + e.Category + ")");
+                int select = Program.ShowMenu("Expenses:", list);
+                ExpenseList.RemoveAt(select);
+                Console.Clear();
+                Console.WriteLine("Expense removed!");
             }
-            int select = Program.ShowMenu("Which expense do you want to remove?", options.ToArray());
-            */
+            catch
+            {
+                Console.Clear();
+                Console.WriteLine("You cannot remove nothing, add an expense first.");
+            }
 
-            ExpenseList.RemoveAt(select);   
-            Console.Clear();
-            Console.WriteLine("Expense removed!");
         }
 
         public void RemoveAllExpenses()
         {
             Console.Clear();
-            int select = Program.ShowMenu("Remove all expenses?:", new[]
+            if (ExpenseList.Count == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("You cannot remove nothing, add an expense first.");
+            }
+            else
+            {
+                int select = Program.ShowMenu("Remove all expenses?:", new[]
                 {
-                "Yes",
-                "No"
+                    "Yes",
+                    "No"
                 });
-            if (@select != 0) return;
-            ExpenseList.Clear();
-            Console.Clear();
-            Console.WriteLine("All expenses removed.");
+
+                if (@select != 0) return;
+                ExpenseList.Clear();
+                Console.Clear();
+                Console.WriteLine("All expenses removed.");
+            }
+
         }
     }
 
@@ -165,17 +171,17 @@ namespace Assignment02
                     "Exit"
                 });
 
-                
+
                 switch (selectedOption) // Menu selection
                 {
-                    case 0:                                     
+                    case 0:
                         p.NewExpense();
                         break;
-                    case 1:                                     
+                    case 1:
                         p.ShowAllExpenses();
                         break;
 
-                    case 2:                                     
+                    case 2:
                         p.ShowSum();
                         break;
 
