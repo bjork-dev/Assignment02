@@ -43,15 +43,19 @@ namespace Assignment02
             {
                 Console.Write("Price: ");
                 userInput = Console.ReadLine();
-                try
+                try 
                 {
                     price = decimal.Parse(userInput);
+                    if (price < 0)
+                    {
+                        throw new Exception();
+                    }
                     break;
                 }
                 catch
                 {
                     Console.Clear();
-                    Console.WriteLine("Error! Please, enter a number.");
+                    Console.WriteLine("Error! Please, enter a positive number.");
                 }
             }
 
