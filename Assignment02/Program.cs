@@ -268,15 +268,54 @@ namespace Assignment02
     public class ProgramTests
     {
         [TestMethod]
-        public void SumTest() //Work in progress
+        public void SumTestOnSpecificCategory() //Return the sum of Food category only
         {
-            var test = new Expense{ Name = "Water", Price = 100};
-            var test2 = new Expense{ Name = "Bills", Price = 300};
+            var test = new Expense{ Name = "Water", Price = 100.5M, Category = "Food"};
+            var test2 = new Expense{ Name = "Bills", Price = 300, Category = "Entertainment"};
+            var test3 = new Expense{ Name = "Staropramen", Price = 350, Category = "Food"};
+            Expense.ExpenseList.Add(test);
+            Expense.ExpenseList.Add(test2);
+            Expense.ExpenseList.Add(test3);
+            var sum = Expense.SumExpenses(Expense.ExpenseList, "Food"); //Sum expenses only for Food
+            Assert.AreEqual(450.5M, sum);
+            Expense.ExpenseList.Clear();
+
+        }
+        [TestMethod]
+        public void NegativeSum() //Return a negative value, should fail but works atm.
+        {
+            var test = new Expense{ Name = "Water", Price = 100, Category = "Food"};
+            var test2 = new Expense{ Name = "Bills", Price = -300, Category = "Food"};
+            Expense.ExpenseList.Add(test);
+            Expense.ExpenseList.Add(test2);
+            var sum = Expense.SumExpenses(Expense.ExpenseList);
+            Assert.AreEqual(-200, sum);
+            Expense.ExpenseList.Clear();
+
+
+        }
+        [TestMethod]
+        public void NullTest() //Return 0
+        {
+            var test = new Expense{ Name = null, Price = -0.1M};
+            var test2 = new Expense{ Name = null, Price = 0.1M};
             Expense.ExpenseList.Add(test);
             Expense.ExpenseList.Add(test2);
             var sum = Expense.SumExpenses(Expense.ExpenseList, null);
-            Assert.AreEqual(400, sum);
+            Assert.AreEqual(0M, sum);
+            Expense.ExpenseList.Clear();
 
+        }
+        [TestMethod]
+        public void DoubleTest() //Should fail
+        {
+            var test = new Expense{ Name = null, Price = 100.5M};
+            var test2 = new Expense{ Name = null, Price = 200.6M};
+            Expense.ExpenseList.Add(test);
+            Expense.ExpenseList.Add(test2);
+            var sum = Expense.SumExpenses(Expense.ExpenseList);
+            Assert.AreEqual(301.1, sum);
+            Expense.ExpenseList.Clear();
 
         }
     }
