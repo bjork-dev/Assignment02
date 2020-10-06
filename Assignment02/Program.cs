@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,8 +14,7 @@ namespace Assignment02
         public static string[] ArrayCategory = {"Food", "Entertainment", "Other"};
         public static List<Expense> ExpenseList = new List<Expense>();
 
-        public void
-            NewExpense() // Reads purchase information from the console and adds this purchase to the ExpenseList
+        public void NewExpense() // Reads purchase information from the console and adds this purchase to the ExpenseList
         {
             Console.Clear();
             Console.WriteLine("Add expense: ");
@@ -59,8 +57,8 @@ namespace Assignment02
                 }
             }
 
-            int indexCategory = Program.ShowMenu("Category:", Expense.ArrayCategory);
-            var category = Expense.ArrayCategory[indexCategory];
+            int indexCategory = Program.ShowMenu("Category:", ArrayCategory);
+            var category = ArrayCategory[indexCategory];
 
             var purchase = new Expense
             {
@@ -74,10 +72,7 @@ namespace Assignment02
             Console.WriteLine("Expense added!");
         }
 
-        public static decimal
-            SumExpenses(List<Expense> expenses,
-                string category =
-                    null) //Return the sum of all expenses with the specified category in the specified list, or the sum of all expenses if the category is null.
+        public static decimal SumExpenses(List<Expense> expenses, string category = null) //Returns the sum of all expenses with the specified category in the specified list, or the sum of all expenses if the category is null.
         {
             decimal sum = 0;
             foreach (var element in expenses)
@@ -104,7 +99,7 @@ namespace Assignment02
                 Console.WriteLine("- " + e.Name + ": " + e.Price + " kr (" + e.Category + ")");
             }
 
-            Console.WriteLine("\nSum: " + Expense.SumExpenses(ExpenseList) + " kr"); //Show the total sum
+            Console.WriteLine("\nSum: " + SumExpenses(ExpenseList) + " kr"); //Show the total sum
         }
 
         public void ShowSum() //Displays the sum divided by the categories.
@@ -113,7 +108,7 @@ namespace Assignment02
             Console.WriteLine("Sum by category:\n");
             foreach (string str in ArrayCategory)
             {
-                Console.WriteLine(str + ": " + Expense.SumExpenses(ExpenseList, str) + " kr");
+                Console.WriteLine(str + ": " + SumExpenses(ExpenseList, str) + " kr");
             }
         }
 
@@ -134,7 +129,6 @@ namespace Assignment02
                 Console.Clear();
                 Console.WriteLine("You cannot remove nothing, add an expense first.");
             }
-
         }
 
         public void RemoveAllExpenses()
@@ -153,12 +147,11 @@ namespace Assignment02
                     "No"
                 });
 
-                if (@select != 0) return;
+                if (select != 0) return;
                 ExpenseList.Clear();
                 Console.Clear();
                 Console.WriteLine("All expenses removed.");
             }
-
         }
     }
 
@@ -272,7 +265,7 @@ namespace Assignment02
     public class ProgramTests
     {
         [TestMethod]
-        public void SumTestOnSpecificCategory() //Return the sum of Food category only
+        public void SumTestOnSpecificCategory() //Sum expenses only for Food
         {
             var test = new Expense{ Name = "Water", Price = 100.5M, Category = "Food"};
             var test2 = new Expense{ Name = "Bills", Price = 300, Category = "Entertainment"};
@@ -280,24 +273,25 @@ namespace Assignment02
             Expense.ExpenseList.Add(test);
             Expense.ExpenseList.Add(test2);
             Expense.ExpenseList.Add(test3);
-            var sum = Expense.SumExpenses(Expense.ExpenseList, "Food"); //Sum expenses only for Food
+            var sum = Expense.SumExpenses(Expense.ExpenseList, "Food"); 
             Assert.AreEqual(450.5M, sum);
             Expense.ExpenseList.Clear();
-
         }
+
         [TestMethod]
-        public void NegativeSum() //Return a negative value, should fail but works atm.
+        public void SumAllExpenses() // Sum of all expenses
         {
-            var test = new Expense{ Name = "Water", Price = 100, Category = "Food"};
-            var test2 = new Expense{ Name = "Bills", Price = -300, Category = "Food"};
+            var test = new Expense { Name = "Water", Price = 100.5M, Category = "Food" };
+            var test2 = new Expense { Name = "Bills", Price = 300, Category = "Entertainment" };
+            var test3 = new Expense { Name = "Staropramen", Price = 350, Category = "Food" };
             Expense.ExpenseList.Add(test);
             Expense.ExpenseList.Add(test2);
-            var sum = Expense.SumExpenses(Expense.ExpenseList);
-            Assert.AreEqual(-200, sum);
+            Expense.ExpenseList.Add(test3);
+            var sum = Expense.SumExpenses(Expense.ExpenseList); 
+            Assert.AreEqual(750.5M, sum);
             Expense.ExpenseList.Clear();
-
-
         }
+
         [TestMethod]
         public void NullTest() //Return 0
         {
@@ -308,19 +302,6 @@ namespace Assignment02
             var sum = Expense.SumExpenses(Expense.ExpenseList, null);
             Assert.AreEqual(0M, sum);
             Expense.ExpenseList.Clear();
-
-        }
-        [TestMethod]
-        public void DoubleTest() //Should fail
-        {
-            var test = new Expense{ Name = null, Price = 100.5M};
-            var test2 = new Expense{ Name = null, Price = 200.6M};
-            Expense.ExpenseList.Add(test);
-            Expense.ExpenseList.Add(test2);
-            var sum = Expense.SumExpenses(Expense.ExpenseList);
-            Assert.AreEqual(301.1, sum);
-            Expense.ExpenseList.Clear();
-
         }
     }
 }
