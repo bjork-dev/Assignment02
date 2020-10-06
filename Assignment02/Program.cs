@@ -12,10 +12,11 @@ namespace Assignment02
         public string Name;
         public decimal Price;
         public string Category;
-        public static string[] ArrayCategory = { "Food", "Entertainment", "Other" };
-        public List<Expense> ExpenseList = new List<Expense>();
+        public static string[] ArrayCategory = {"Food", "Entertainment", "Other"};
+        public static List<Expense> ExpenseList = new List<Expense>();
 
-        public void NewExpense() // Reads purchase information from the console and adds this purchase to the ExpenseList
+        public void
+            NewExpense() // Reads purchase information from the console and adds this purchase to the ExpenseList
         {
             Console.Clear();
             Console.WriteLine("Add expense: ");
@@ -33,6 +34,7 @@ namespace Assignment02
                     name = userInput;
                     break;
                 }
+
                 Console.Clear();
                 Console.WriteLine("Error! Please, enter a name.");
             }
@@ -68,7 +70,10 @@ namespace Assignment02
             Console.WriteLine("Expense added!");
         }
 
-        public static decimal SumExpenses(List<Expense> expenses, string category = null)  //Return the sum of all expenses with the specified category in the specified list, or the sum of all expenses if the category is null.
+        public static decimal
+            SumExpenses(List<Expense> expenses,
+                string category =
+                    null) //Return the sum of all expenses with the specified category in the specified list, or the sum of all expenses if the category is null.
         {
             decimal sum = 0;
             foreach (var element in expenses)
@@ -82,6 +87,7 @@ namespace Assignment02
                     sum += element.Price;
                 }
             }
+
             return sum;
         }
 
@@ -93,6 +99,7 @@ namespace Assignment02
             {
                 Console.WriteLine("- " + e.Name + ": " + e.Price + " kr (" + e.Category + ")");
             }
+
             Console.WriteLine("\nSum: " + Expense.SumExpenses(ExpenseList) + " kr"); //Show the total sum
         }
 
@@ -236,6 +243,7 @@ namespace Assignment02
                         Console.BackgroundColor = ConsoleColor.Blue;
                         Console.ForegroundColor = ConsoleColor.White;
                     }
+
                     Console.WriteLine("- " + option);
                     Console.ResetColor();
                 }
@@ -260,9 +268,16 @@ namespace Assignment02
     public class ProgramTests
     {
         [TestMethod]
-        public void ExampleTest()
+        public void SumTest() //Work in progress
         {
-            // Code needed here.
+            var Test = new Expense{ Name ="Water", Price = 100};
+            var Test2 = new Expense{ Name ="Bills", Price = 300};
+            Expense.ExpenseList.Add(Test);
+            Expense.ExpenseList.Add(Test2);
+            var sum = Expense.SumExpenses(Expense.ExpenseList, null);
+            Assert.AreEqual(400, sum);
+
+
         }
     }
 }
