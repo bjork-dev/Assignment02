@@ -270,10 +270,10 @@ namespace Assignment02
         [TestMethod]
         public void SumTest() //Work in progress
         {
-            var Test = new Expense{ Name ="Water", Price = 100};
-            var Test2 = new Expense{ Name ="Bills", Price = 300};
-            Expense.ExpenseList.Add(Test);
-            Expense.ExpenseList.Add(Test2);
+            var test = new Expense{ Name = "Water", Price = 100};
+            var test2 = new Expense{ Name = "Bills", Price = 300};
+            Expense.ExpenseList.Add(test);
+            Expense.ExpenseList.Add(test2);
             var sum = Expense.SumExpenses(Expense.ExpenseList, null);
             Assert.AreEqual(400, sum);
 
