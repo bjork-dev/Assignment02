@@ -11,7 +11,7 @@ namespace Assignment02
         public string Name;
         public decimal Price;
         public string Category;
-        public static string[] ArrayCategory = {"Food", "Entertainment", "Other"};
+        public static string[] Categories = {"Food", "Entertainment", "Other"};
         public static List<Expense> ExpenseList = new List<Expense>();
 
         public void NewExpense() // Reads purchase information from the console and adds this purchase to the ExpenseList
@@ -44,7 +44,7 @@ namespace Assignment02
                 try 
                 {
                     price = decimal.Parse(userInput);
-                    if (price < 0)
+                    if (price <= 0)
                     {
                         throw new Exception();
                     }
@@ -57,8 +57,8 @@ namespace Assignment02
                 }
             }
 
-            int indexCategory = Program.ShowMenu("Category:", ArrayCategory);
-            var category = ArrayCategory[indexCategory];
+            int indexCategory = Program.ShowMenu("Category:", Categories);
+            string category = Categories[indexCategory];
 
             var purchase = new Expense
             {
@@ -106,9 +106,9 @@ namespace Assignment02
         {
             Console.Clear();
             Console.WriteLine("Sum by category:\n");
-            foreach (string str in ArrayCategory)
+            foreach (string category in Categories)
             {
-                Console.WriteLine(str + ": " + SumExpenses(ExpenseList, str) + " kr");
+                Console.WriteLine(category + ": " + SumExpenses(ExpenseList, category) + " kr");
             }
         }
 
@@ -136,7 +136,6 @@ namespace Assignment02
             Console.Clear();
             if (ExpenseList.Count == 0)
             {
-                Console.Clear();
                 Console.WriteLine("You cannot remove nothing, add an expense first.");
             }
             else
@@ -160,7 +159,7 @@ namespace Assignment02
         public static void Main()
         {
             var p = new Expense();
-            var running = true;
+            bool running = true;
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             Console.WriteLine("Welcome!");
             while (running)
